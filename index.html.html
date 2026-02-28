@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>问道 - 修仙模拟经营</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="top-bar">
+  <span id="game-title">问　道</span>
+  <div class="divider"></div>
+  <div class="stat-item"><span class="stat-label">境　界</span><span class="stat-value" style="color:var(--gold)" id="ui-realm">炼气一层</span></div>
+  <div class="divider"></div>
+  <div class="bar-wrap">
+    <div class="bar-row"><span class="bar-label">气血</span><div class="bar-bg"><div class="bar-fill bar-hp" id="ui-hp-bar" style="width:100%"></div></div><span class="bar-text" style="color:var(--red-light)" id="ui-hp-text">100/100</span></div>
+    <div class="bar-row"><span class="bar-label">修为</span><div class="bar-bg"><div class="bar-fill bar-xiu" id="ui-xiu-bar" style="width:0%"></div></div><span class="bar-text" style="color:#b07ae8" id="ui-xiu-text">0/100</span></div>
+  </div>
+  <div class="divider"></div>
+  <div class="stat-item"><span class="stat-label">灵　石</span><span class="stat-value" style="color:var(--gold-light)" id="ui-stone">0</span></div>
+  <div style="margin-left:auto;display:flex;gap:8px">
+    <button class="btn" style="padding:5px 10px;font-size:12px" onclick="Game.save()">💾 存档</button>
+    <button class="btn red" style="padding:5px 10px;font-size:12px" onclick="Game.confirmReset()">🔄 重置</button>
+  </div>
+</div>
+
+<div id="main-area">
+  <div id="left-panel">
+
+    <!-- 修炼专属视图 -->
+    <div id="cultivate-view">
+      <div class="cult-top">
+        <div class="cult-top-item"><div class="cult-top-title">总修炼速度</div><div class="cult-top-val" id="c-speed">0 / 分钟</div></div>
+        <div class="cult-top-item"><div class="cult-top-title">距离突破剩余</div><div class="cult-top-val" style="color:var(--gold-light)" id="c-time">00:00:00</div></div>
+      </div>
+      <div class="cult-center">
+        <div id="bubble-area"></div>
+        <div class="avatar-box">
+          <div class="avatar-icon">🧘‍♂️</div>
+          <div class="avatar-realm" id="c-realm-name">炼气一层</div>
+          <div class="exp-bar-wrap"><div class="exp-fill" id="c-exp-fill" style="width:0%"></div></div>
+          <div class="exp-text" id="c-exp-text">0 / 100</div>
+          <div style="margin-top:12px;display:flex;gap:8px;">
+            <button class="btn jade" id="c-collect-btn" onclick="Game.collectAllBubbles()">吸收气泡</button>
+            <button class="btn gold" id="c-break-btn" onclick="Game.tryBreakthrough()">尝试突破</button>
+          </div>
+        </div>
+      </div>
+      <div class="cult-bottom">
+        <div class="module-box">
+          <div class="module-title">洞府聚灵阵</div>
+          <div class="array-icon">☯</div>
+          <div class="array-text" id="c-array-text">打坐吸收率: +0%<br>基础灵气: 2/次</div>
+          <button class="btn" style="width:100%" onclick="Game.switchTab('cave')">前往升级</button>
+        </div>
+        <div class="module-box" style="flex:1.5">
+          <div class="module-title">化灵葫芦</div>
+          <div class="gourd-icon">🏺</div>
+          <div class="gourd-bar"><div class="gourd-fill" id="c-gourd-fill" style="width:0%"></div></div>
+          <div class="gourd-text" id="c-gourd-text">储能: 0/100 灵石</div>
+          <button class="btn blue" id="c-charge-btn" style="width:100%" onclick="Game.chargeGourd()">注入灵石</button>
+        </div>
+        <div class="module-box">
+          <div class="module-title">深度闭关</div>
+          <div class="array-icon" style="color:var(--purple)">⛩</div>
+          <div class="array-text">消耗 50 灵石<br>瞬间获得大量修为</div>
+          <button class="btn purple" style="width:100%" onclick="Game.seclude()">开始闭关</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 通用视图 (探索/洞府/背包) -->
+    <div id="generic-view">
+      <div id="scene-area">
+        <div id="scene-title">洞府</div>
+        <div id="scene-desc">描述</div>
+        <div id="battle-area">
+          <div class="combatants">
+            <div class="c-card player">
+              <div class="c-name" id="b-pname">道者</div>
+              <div class="bar-row"><div class="bar-bg" style="flex:1"><div class="bar-fill bar-hp" id="b-php" style="width:100%"></div></div><span class="bar-text" style="color:var(--red-light)" id="b-php-text">-</span></div>
+            </div>
+            <div class="vs">VS</div>
+            <div class="c-card enemy">
+              <div class="c-name" id="b-ename">-</div>
+              <div class="bar-row"><div class="bar-bg" style="flex:1"><div class="bar-fill bar-hp" id="b-ehp" style="width:100%"></div></div><span class="bar-text" style="color:var(--red-light)" id="b-ehp-text">-</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="action-area"></div>
+      <div id="attr-panel">
+        <div class="panel-section-title">── 道者属性 ──</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 16px;" id="attr-grid"></div>
+      </div>
+    </div>
+
+  </div>
+  <div id="right-panel">
+    <div id="log-title">── 修道日志 ──</div>
+    <div id="log-area"></div>
+  </div>
+</div>
+
+<div id="bottom-nav">
+  <button class="nav-btn active" id="nav-cultivate" onclick="Game.switchTab('cultivate')"><span class="icon">☯</span>修炼</button>
+  <button class="nav-btn" id="nav-explore" onclick="Game.switchTab('explore')"><span class="icon">⚔</span>探索</button>
+  <button class="nav-btn" id="nav-cave" onclick="Game.switchTab('cave')"><span class="icon">🏠</span>洞府</button>
+  <button class="nav-btn" id="nav-bag" onclick="Game.switchTab('bag')"><span class="icon">🎒</span>背包</button>
+</div>
+
+<div id="modal-overlay">
+  <div id="modal-box">
+    <div id="modal-title">提示</div>
+    <div id="modal-body"></div>
+    <button id="modal-close" onclick="UI.closeModal()">关闭</button>
+  </div>
+</div>
+
+<!-- JS 加载顺序很重要：data → calc → ui → combat → game -->
+<script src="data.js"></script>
+<script src="calc.js"></script>
+<script src="ui.js"></script>
+<script src="combat.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
