@@ -46,6 +46,8 @@ body { background: var(--bg-dark); color: var(--text-primary); font-family: 'Sim
 .bubble.blue { background: radial-gradient(circle at 30% 30%, #7aaae8, #4c7ac9); border: 1px solid #a0c4ff; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
 .bubble-val { font-size: 13px; font-weight: bold; }
 .bubble-label { font-size: 10px; opacity: 0.8; }
+.bubble { /* 原有样式保持不变，新增这一行 */
+  pointer-events: auto;}
 @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-8px); } 100% { transform: translateY(0px); } }
 
 /* ── 打坐小人 ── */
